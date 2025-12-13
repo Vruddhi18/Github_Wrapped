@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Wrapped 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-calendar@4.0.4/dist/github-calendar.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/github-calendar@4.0.4/dist/github-calendar.min.js"></script>
+    <style>
+        :root {
+            --glass-bg: rgba(255,255,255,0.1);
+            --glass-border: rgba(255,255,255,0.2);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --glass-bg: rgba(0,0,0,0.4);
+                --glass-border: rgba(255,255,255,0.1);
+            }
+        }
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+        .animate-in { animation: slideIn 0.6s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 min-h-screen text-white p-4 md:p-8">
+    <div id="app" class="max-w-6xl mx-auto">
+        <header class="text-center mb-16 animate-in">
+            <h1 class="text-5xl md:text-7xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent mb-4 drop-shadow-2xl">
+                GitHub Wrapped
+            </h1>
+            <p class="text-xl md:text-2xl opacity-90 font-medium">Your 2025 coding journey, visualized ✨</p>
+        </header>
+
+        <div id="loading" class="text-center hidden">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400"></div>
+            <p class="mt-4 text-lg">Loading your stats...</p>
+        </div>
+
+        <div id="stats-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 hidden">
+            <!-- Total Stats Card -->
+            <div class="glass-card p-8 rounded-3xl shadow-2xl hover:shadow-purple-500/30 transition-all duration-500 animate-in">
+                <h2 class="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Total Impact</h2>
+                <img id="stats-card" class="w-full rounded-2xl shadow-2xl mx-auto block" src="" alt="Stats">
+                <p id="total-commits" class="text-center mt-4 text-lg font-semibold"></p>
+            </div>
+
+            <!-- Top Languages -->
+            <div class="glass-card p-8 rounded-3xl shadow-2xl hover:shadow-blue-500/30 transition-all duration-500 animate-in">
+                <h2 class="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">Top Languages</h2>
+                <img id="langs-card" class="w-full rounded-2xl shadow-2xl mx-auto block" src="" alt="Languages">
+            </div>
+
+            <!-- Streak Calendar -->
+            <div class="glass-card p-8 rounded-3xl shadow-2xl hover:shadow-green-500/30 transition-all duration-500 animate-in md:col-span-2 lg:col-span-1">
+                <h2 class="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">Current Streak</h2>
+                <div id="streak-calendar" class="calendar"></div>
+            </div>
+
+            <!-- Activity Graph -->
+            <div class="glass-card p-8 rounded-3xl shadow-2xl hover:shadow-orange-500/30 transition-all duration-500 animate-in md:col-span-2">
+                <h2 class="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">2025 Activity</h2>
+                <img id="activity-card" class="w-full rounded-2xl shadow-2xl mx-auto block" src="" alt="Activity">
+            </div>
+        </div>
+
+        <!-- Share Section -->
+        <div id="share-section" class="glass-card p-12 rounded-3xl shadow-2xl mt-16 mx-auto max-w-2xl text-center hidden hover:shadow-pink-500/30 transition-all duration-500">
+            <h2 class="text-3xl font-bold mb-6 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">Share Your Wrapped ✨</h2>
+            <button id="share-btn" class="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 px-12 py-6 rounded-2xl font-bold text-xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 border border-white/20">
+                📱 Share to Social Media
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const USERNAME = 'YOUR_USERNAME'; // Replace with your GitHub username
+        const cards = {
+            stats: document.getElementById('stats-card'),
+            langs: document.getElementById('langs-card'),
+            activity: document.getElementById('activity-card')
+        };
+
+        async function loadStats() {
+            document.getElementById('loading').classList.remove('hidden');
+            
+            try {
+                // Fetch from your API route
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+                
+                // Update cards with 2025 theme
+                cards.stats.src = `https://github-readme-stats.vercel.app/api?username=${USERNAME}&show_icons=true&theme=dracula&hide_border=true&bg_color=0D111700&hide=issues,contribs&border_radius=24&title_color=5865f2&text_color=ffffff&icon_color=5865f2`;
+                cards.langs.src = `https://github-readme-stats.vercel.app/api/top-langs/?username=${USERNAME}&layout=donut&theme=dracula&hide_border=true&bg_color=0D111700&border_radius=24`;
+                cards.activity.src = `https://github-readme-stats.vercel.app/api/wakatime?username=${USERNAME}&theme=dracula&layout=bar&langs_count=10`;
+
+                // Load streak calendar
+                GitHubCalendar("#streak-calendar", USERNAME, { responsive: true });
+
+                document.getElementById('stats-grid').classList.remove('hidden');
+                document.getElementById('share-section').classList.remove('hidden');
+                document.getElementById('loading').classList.add('hidden');
+                
+            } catch (error) {
+                console.error('Stats load failed:', error);
+                document.getElementById('loading').innerHTML = '<p class="mt-4 text-lg text-red-400">Failed to load stats. Check your token.</p>';
+            }
+        }
+
+        // Auto-load on page ready
+        window.addEventListener('load', loadStats);
+
+        // Share functionality
+        document.getElementById('share-btn').addEventListener('click', () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My GitHub Wrapped 2025',
+                    text: 'Check out my 2025 GitHub stats!',
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard! 📋');
+            }
+        });
+
+        // Add stagger animation to cards
+        document.querySelectorAll('.glass-card').forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+    </script>
+</body>
+</html>
