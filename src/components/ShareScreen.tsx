@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Link, Share2 } from 'lucide-react';
-import html2canvas from 'html2canvas';
+// import html2canvas from 'html2canvas';
 
 interface Props {
   data: any;
@@ -13,24 +13,28 @@ interface Props {
 export default function ShareScreen({ data, username, className }: Props) {
   const [exporting, setExporting] = useState(false);
 
+  // const exportImage = async () => {
+  //   setExporting(true);
+  //   try {
+  //     const element = document.querySelector('#stats-screen') as HTMLElement;
+  //     const canvas = await html2canvas(element!, {
+  //       backgroundColor: '#0f0f23',
+  //       scale: 2,
+  //       useCORS: true
+  //     });
+  //     const link = document.createElement('a');
+  //     link.download = `github-wrapped-2025-${username}.png`;
+  //     link.href = canvas.toDataURL();
+  //     link.click();
+  //   } catch {
+  //     alert('Export failed');
+  //   }
+  //   setExporting(false);
+  // };
   const exportImage = async () => {
-    setExporting(true);
-    try {
-      const element = document.querySelector('#stats-screen') as HTMLElement;
-      const canvas = await html2canvas(element!, {
-        backgroundColor: '#0f0f23',
-        scale: 2,
-        useCORS: true
-      });
-      const link = document.createElement('a');
-      link.download = `github-wrapped-2025-${username}.png`;
-      link.href = canvas.toDataURL();
-      link.click();
-    } catch {
-      alert('Export failed');
-    }
-    setExporting(false);
-  };
+  alert('Image download is temporarily disabled while deployment is being set up.');
+};
+
 
   const shareUrl = `${window.location.origin}${window.location.pathname}?username=${username}`;
 
