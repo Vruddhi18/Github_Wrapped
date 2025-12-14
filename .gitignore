@@ -2,7 +2,7 @@
 .env
 .env.local
 .env.*.local
-
+menv
 # Vercel
 .vercel
 
